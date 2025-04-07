@@ -1,7 +1,7 @@
 {
   "name": "puppeteer-screenshot-server",
   "version": "1.0.0",
-  "description": "Screenshot API (Chromium via system package)",
+  "description": "Screenshot API (system Chromium)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
