@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Simple Puppeteer screenshot API",
   "main": "server.js",
-  "scripts": {
-    "postinstall": "PUPPETEER_CACHE_DIR=./.cache/puppeteer npx puppeteer browsers install chrome",
-    "start": "node server.js"
-  },
+ "scripts": {
+  "postinstall": "PUPPETEER_CACHE_DIR=/opt/render/project/src/.cache/puppeteer npx puppeteer browsers install chrome",
+  "start": "node server.js"
+},
   "dependencies": {
     "express": "^4.18.2",
     "puppeteer": "^24.6.0"
