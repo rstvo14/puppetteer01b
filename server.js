@@ -26,7 +26,6 @@ app.get('/screenshot', async (req, res) => {
 
     browser = await puppeteer.launch({
       headless: 'new',
-      // executablePath not needed—Puppeteer uses cacheDirectory from config
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
