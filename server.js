@@ -29,7 +29,6 @@ app.get("/screenshot", async (req, res) => {
 
     const browser = await puppeteer.launch({
       headless: "new",
-      executablePath: puppeteer.executablePath(), // ← this line added
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
