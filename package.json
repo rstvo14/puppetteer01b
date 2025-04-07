@@ -7,7 +7,8 @@
   },
   "scripts": {
     "start": "node server.js",
-    "screenshot": "node screenshot.js"
+    "screenshot": "node screenshot.js",
+    "postinstall": "puppeteer browsers install chrome"
   },
   "dependencies": {
     "express": "^4.19.2",
