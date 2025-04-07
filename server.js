@@ -29,6 +29,7 @@ app.get("/screenshot", async (req, res) => {
     });
 
     const page = await browser.newPage();
+    page.setDefaultNavigationTimeout(0);               // disable 30 s cap
 
     if (process.env.BASIC_AUTH_USER) {
       await page.authenticate({
@@ -37,20 +38,20 @@ app.get("/screenshot", async (req, res) => {
       });
     }
 
-    await page.goto(pageUrl, { waitUntil: "networkidle2", timeout: 0 });
+    await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 0 });
 
-    /* give Mapbox extra time */
-    await page.waitForTimeout(6000);
+    /* give Mapbox tiles & legends time to render */
+    await page.waitForTimeout(10000);
 
-    await page.waitForSelector(selector, { timeout: 10000 });
+    await page.waitForSelector(selector, { timeout: 15000 });
 
     const element = await page.$(selector);
     if (!element) throw new Error(`Selector '${selector}' not found`);
 
     const png = await element.screenshot({ type: "png" });
     await browser.close();
-
     res.type("png").send(png);
+
   } catch (err) {
     console.error("Screenshot error:", err);
     if (browser) await browser.close();
