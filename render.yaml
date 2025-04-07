@@ -3,8 +3,10 @@ services:
     name: puppeteer-screenshot-server
     env: node
     plan: starter
-    buildCommand: npm ci
+    buildCommand: npm ci               # postinstall runs here
     startCommand: node server.js
     envVars:
       - key: NODE_VERSION
         value: "20.12.2"
+      - key: PUPPETEER_CACHE_DIR       # keeps the downloaded browser between builds
+        value: /opt/render/.cache/puppeteer
