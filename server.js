@@ -23,7 +23,7 @@ app.get('/screenshot', async (req, res) => {
 
     browser = await puppeteer.launch({
       headless: 'new',
-      executablePath: '/usr/bin/chromium-browser',   // ← system Chromium
+      executablePath: '/usr/bin/chromium',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
