@@ -22,7 +22,7 @@ app.get("/screenshot", async (req, res) => {
   let browser;
   try {
     browser = await puppeteer.launch({
-      executablePath: await chromium.executablePath(),
+      executablePath: await chromium.executablePath("/tmp"),
       args: chromium.args,
       headless: chromium.headless,
       defaultViewport: { width: 1920, height: 1080 }
