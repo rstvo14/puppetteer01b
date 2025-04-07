@@ -1,19 +1,16 @@
 const express   = require('express');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const path      = require('path');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-/* ---------- static files ---------- */
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
-/* ---------- root route ---------- */
 app.get('/', (_req, res) => {
   res.send('<h2>Use /screenshot?url=URL&selector=CSS_SELECTOR to get an image</h2>');
 });
 
-/* ---------- screenshot API ---------- */
 app.get('/screenshot', async (req, res) => {
   const { url, selector } = req.query;
   if (!url || !selector) {
@@ -26,7 +23,12 @@ app.get('/screenshot', async (req, res) => {
 
     browser = await puppeteer.launch({
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      executablePath: '/usr/bin/chromium-browser',   // ← system Chromium
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--font-render-hinting=medium'
+      ]
     });
 
     const page = await browser.newPage();
@@ -46,7 +48,6 @@ app.get('/screenshot', async (req, res) => {
   }
 });
 
-/* ---------- start server ---------- */
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });

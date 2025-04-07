@@ -1,13 +1,13 @@
 {
   "name": "puppeteer-screenshot-server",
   "version": "1.0.0",
-  "description": "Simple Puppeteer screenshot API",
+  "description": "Screenshot API (Chromium via system package)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "puppeteer": "21.3.8"
+    "puppeteer-core": "^24.6.0"
   }
 }
