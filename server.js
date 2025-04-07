@@ -22,7 +22,7 @@ app.get("/screenshot", async (req, res) => {
   let browser;
   try {
     browser = await puppeteer.launch({
-      executablePath: await chromium.executablePath("/tmp"), // ✅ FIXED
+      executablePath: await chromium.executablePath(), // ✅ NO /tmp
       args: chromium.args,
       headless: chromium.headless,
       defaultViewport: { width: 1920, height: 1080 }
@@ -31,16 +31,7 @@ app.get("/screenshot", async (req, res) => {
     const page = await browser.newPage();
     page.setDefaultNavigationTimeout(0);
 
-    if (process.env.BASIC_AUTH_USER) {
-      await page.authenticate({
-        username: process.env.BASIC_AUTH_USER,
-        password: process.env.BASIC_AUTH_PASS
-      });
-    }
-
     await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 0 });
-
-    // Let Mapbox load
     await new Promise(r => setTimeout(r, 10000));
     await page.waitForSelector(selector, { timeout: 15000 });
 
