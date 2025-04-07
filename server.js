@@ -21,8 +21,10 @@ app.get("/screenshot", async (req, res) => {
 
   let browser;
   try {
+    const pathToChromium = await chromium.createPath(); // ensures it's extracted and safe
+
     browser = await puppeteer.launch({
-      executablePath: await chromium.executablePath("/tmp"),
+      executablePath: pathToChromium,
       args: chromium.args,
       headless: chromium.headless,
       defaultViewport: { width: 1920, height: 1080 }
