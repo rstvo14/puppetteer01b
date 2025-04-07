@@ -1,5 +1,6 @@
 import express from "express";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -17,7 +18,10 @@ app.get("/screenshot", async (req, res) => {
 
   try {
     const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+      executablePath: await chromium.executablePath(),
+      args: chromium.args,
+      headless: chromium.headless,
+      defaultViewport: chromium.defaultViewport
     });
 
     const page = await browser.newPage();

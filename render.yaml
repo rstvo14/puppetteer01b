@@ -3,5 +3,5 @@ services:
     name: puppeteer-screenshot-service
     runtime: node
     nodeVersion: 20
-    buildCommand: "npm install"
-    startCommand: "npm start"
+    buildCommand: npm install
+    startCommand: npm start
