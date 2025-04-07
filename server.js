@@ -4,7 +4,7 @@ import chromium from "@sparticuz/chromium";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const app  = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 const TARGET_URL       = process.env.TARGET_URL || `http://localhost:${PORT}`;
@@ -40,9 +40,7 @@ app.get("/screenshot", async (req, res) => {
 
     await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 0 });
 
-    /* give Mapbox tiles & legends 10 s to finish */
     await new Promise(r => setTimeout(r, 10000));
-
     await page.waitForSelector(selector, { timeout: 15000 });
 
     const element = await page.$(selector);
@@ -50,7 +48,12 @@ app.get("/screenshot", async (req, res) => {
 
     const png = await element.screenshot({ type: "png" });
     await browser.close();
-    res.type("png").send(png);
+
+    res.set({
+      "Content-Type": "image/png",
+      "Content-Length": png.length
+    });
+    res.send(png);
 
   } catch (err) {
     console.error("Screenshot error:", err);
