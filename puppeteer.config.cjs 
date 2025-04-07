@@ -1,0 +1,10 @@
+// puppeteer.config.cjs
+const { join } = require('path');
+
+/**
+ * @type {import('puppeteer').Configuration}
+ */
+module.exports = {
+  // Tell Puppeteer to keep (and later look for) Chromium here.
+  cacheDirectory: join(__dirname, '.cache', 'puppeteer'),
+};
