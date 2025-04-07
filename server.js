@@ -29,7 +29,7 @@ app.get("/screenshot", async (req, res) => {
     });
 
     const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(0);               // disable 30 s cap
+    page.setDefaultNavigationTimeout(0);
 
     if (process.env.BASIC_AUTH_USER) {
       await page.authenticate({
@@ -40,8 +40,8 @@ app.get("/screenshot", async (req, res) => {
 
     await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 0 });
 
-    /* give Mapbox tiles & legends time to render */
-    await page.waitForTimeout(10000);
+    /* give Mapbox tiles & legends 10 s to finish */
+    await new Promise(r => setTimeout(r, 10000));
 
     await page.waitForSelector(selector, { timeout: 15000 });
 
