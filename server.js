@@ -1,20 +1,24 @@
-import express from "express";
-import puppeteer from "puppeteer";
+import express   from "express";
+import puppeteer  from "puppeteer";
+import path       from "path";
+import { fileURLToPath } from "url";
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-/* ────────────  Static site  ──────────── */
-app.use(express.static("public"));
+/* ----------  serve static assets  ---------- */
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(express.static(path.join(__dirname, "public")));
 
-/* ────────────  Health check  ─────────── */
+/* send index.html at "/" even though it lives at repo root */
+app.get("/", (_, res) => res.sendFile(path.join(__dirname, "index.html")));
+
+/* ----------  health check  ---------- */
 app.get("/healthz", (_, res) => res.send("ok"));
 
-/* ────────────  Screenshot API  ─────────
+/* ----------  screenshot API  ----------
    GET /screenshot?url=<pageUrl>&selector=<cssSelector>
-   • url      – absolute URL to load  (defaults to this service root)
-   • selector – CSS selector to grab  (defaults to #mapColumns)
-*/
+----------------------------------------- */
 app.get("/screenshot", async (req, res) => {
   const pageUrl  = req.query.url      || `http://localhost:${PORT}`;
   const selector = req.query.selector || "#mapColumns";
@@ -36,13 +40,12 @@ app.get("/screenshot", async (req, res) => {
     const png = await element.screenshot({ type: "png" });
     await browser.close();
 
-    res.set("Content-Type", "image/png");
-    res.send(png);
+    res.type("png").send(png);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Screenshot failed");
+    res.status(500).send("Screenshot failed – see server logs");
   }
 });
 
-/* ────────────  Start server  ─────────── */
+/* ----------  start server  ---------- */
 app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
