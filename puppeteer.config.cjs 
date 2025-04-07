@@ -1,8 +1,0 @@
-const { join } = require('path');
-
-/** @type {import('puppeteer').Configuration} */
-module.exports = {
-  // Use a cache directory that lives inside the repo,
-  // so it’s present in both build‑time and run‑time containers.
-  cacheDirectory: join(__dirname, '.cache', 'puppeteer'),
-};
