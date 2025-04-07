@@ -4,7 +4,7 @@
   "description": "Simple Puppeteer screenshot API",
   "main": "server.js",
   "scripts": {
-    "postinstall": "npx puppeteer browsers install chrome --install-deps",
+    "postinstall": "npx puppeteer browsers install chrome",
     "start": "node server.js"
   },
   "dependencies": {
