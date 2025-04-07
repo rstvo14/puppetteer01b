@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
-    "screenshot": "node src/screenshot.js"
+    "start": "node server.js",
+    "screenshot": "node screenshot.js"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
