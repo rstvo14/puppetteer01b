@@ -5,6 +5,3 @@ services:
     plan: starter
     buildCommand: npm ci
     startCommand: node server.js
-    envVars:
-      - key: NODE_VERSION
-        value: "20.12.2"
