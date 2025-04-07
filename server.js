@@ -22,23 +22,30 @@ app.get("/screenshot", async (req, res) => {
   let browser;
   try {
     browser = await puppeteer.launch({
-      executablePath: await chromium.executablePath(), // ✅ NO /tmp
+      executablePath: await chromium.executablePath(),
       args: chromium.args,
       headless: chromium.headless,
-      defaultViewport: { width: 1920, height: 1080 }
+      defaultViewport: { width: 1400, height: 900 }
     });
 
     const page = await browser.newPage();
     page.setDefaultNavigationTimeout(0);
 
-    await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 0 });
-    await new Promise(r => setTimeout(r, 10000));
-    await page.waitForSelector(selector, { timeout: 15000 });
+    const navStart = Date.now();
+    await page.goto(pageUrl, { waitUntil: "networkidle2", timeout: 60000 });
+    console.log(`⏱️ Navigation time: ${(Date.now() - navStart) / 1000}s`);
+
+    const waitStart = Date.now();
+    await page.waitForSelector(`${selector} canvas`, { timeout: 15000 });
+    console.log(`✅ Selector ready in ${(Date.now() - waitStart) / 1000}s`);
 
     const element = await page.$(selector);
     if (!element) throw new Error(`Selector '${selector}' not found`);
 
+    const captureStart = Date.now();
     const png = await element.screenshot({ type: "png" });
+    console.log(`📸 Screenshot captured in ${(Date.now() - captureStart) / 1000}s`);
+
     await browser.close();
 
     res.set({
