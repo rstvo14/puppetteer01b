@@ -48,7 +48,7 @@ app.get("/screenshot", async (req, res) => {
       executablePath: execPath,
       args: chromium.args,
       headless: chromium.headless,
-      defaultViewport: { width: 1400, height: 900 }
+      defaultViewport: { width: 1400, height: 900 },
     });
 
     const page = await browser.newPage();
@@ -69,7 +69,7 @@ app.get("/screenshot", async (req, res) => {
       await browser.close();
       res.set({
         "Content-Type": "image/png",
-        "Content-Length": pngBuffer.length
+        "Content-Length": pngBuffer.length,
       });
       return res.send(pngBuffer);
     } else if (format === "pdf") {
@@ -82,7 +82,7 @@ app.get("/screenshot", async (req, res) => {
         await browser.close();
         res.set({
           "Content-Type": "application/pdf",
-          "Content-Length": pdfBuffer.length
+          "Content-Length": pdfBuffer.length,
         });
         return res.send(pdfBuffer);
       });
