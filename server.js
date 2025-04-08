@@ -17,15 +17,12 @@ app.get("/", (_, res) => res.sendFile(path.join(__dirname, "index.html")));
 app.get("/healthz", (_, res) => res.send("ok"));
 
 app.get("/screenshot", async (req, res) => {
-  // Pull in query params
   const pageUrl  = req.query.url      || TARGET_URL;
   const selector = req.query.selector || DEFAULT_SELECTOR;
-  // This allows "?format=pdf" or "?format=png"
-  const format   = req.query.format   || "png";
+  const format   = req.query.format   || "png";   // "png" (default) or "pdf"
 
   let browser;
   try {
-    // ===== Keep your ORIGINAL LAUNCH SETTINGS (unchanged) =====
     browser = await puppeteer.launch({
       executablePath: await chromium.executablePath(),
       args: chromium.args,
@@ -34,24 +31,26 @@ app.get("/screenshot", async (req, res) => {
     });
 
     const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(0); // remove puppeteer’s default 30s limit
+    page.setDefaultNavigationTimeout(0);
 
-    // Navigate (60s max)
     const navStart = Date.now();
     await page.goto(pageUrl, { waitUntil: "networkidle2", timeout: 60000 });
     console.log(`⏱️ Navigation time: ${(Date.now() - navStart) / 1000}s`);
 
-    // ------- PDF Mode -------
+    // ----------------------------
+    // 1) PDF mode if ?format=pdf
+    // ----------------------------
     if (format === "pdf") {
-      // If you need to wait for a specific selector before PDF,
-      // insert a wait here, e.g.: await page.waitForSelector("#something");
+      // Optionally wait for some element if needed:
+      // await page.waitForSelector(`${selector} canvas`, { timeout: 15000 });
       const pdfStart = Date.now();
       const pdfBuffer = await page.pdf({
         format: "A4",
         printBackground: true
-        // You can add other PDF options here
+        // Add more PDF options if desired:
+        // e.g. landscape: true
       });
-      console.log(`📝 PDF captured in ${(Date.now() - pdfStart) / 1000}s`);
+      console.log(`📝 PDF generated in ${(Date.now() - pdfStart) / 1000}s`);
 
       await browser.close();
       res.set({
@@ -61,7 +60,9 @@ app.get("/screenshot", async (req, res) => {
       return res.send(pdfBuffer);
     }
 
-    // ------- PNG Mode (same as your original code) -------
+    // ----------------------------
+    // 2) PNG mode (default)
+    // ----------------------------
     const waitStart = Date.now();
     await page.waitForSelector(`${selector} canvas`, { timeout: 15000 });
     console.log(`✅ Selector ready in ${(Date.now() - waitStart) / 1000}s`);
@@ -70,21 +71,21 @@ app.get("/screenshot", async (req, res) => {
     if (!element) throw new Error(`Selector '${selector}' not found`);
 
     const captureStart = Date.now();
-    const png = await element.screenshot({ type: "png" });
+    const pngBuffer = await element.screenshot({ type: "png" });
     console.log(`📸 Screenshot captured in ${(Date.now() - captureStart) / 1000}s`);
 
     await browser.close();
 
     res.set({
       "Content-Type": "image/png",
-      "Content-Length": png.length
+      "Content-Length": pngBuffer.length
     });
-    return res.send(png);
+    return res.send(pngBuffer);
 
   } catch (err) {
     console.error("Screenshot error:", err);
     if (browser) await browser.close();
-    return res.status(500).send(`Screenshot failed: ${err.message}`);
+    res.status(500).send(`Screenshot failed: ${err.message}`);
   }
 });
 
