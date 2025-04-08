@@ -34,7 +34,7 @@ app.get("/screenshot", async (req, res) => {
     page.setDefaultNavigationTimeout(0);
 
     const navStart = Date.now();
-    await page.goto(pageUrl, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.goto(pageUrl, { waitUntil: "networkidle2", timeout: 0 });
     console.log(`⏱️ Navigation time: ${(Date.now() - navStart) / 1000}s`);
 
     // ----------------------------
